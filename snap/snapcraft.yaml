@@ -1,0 +1,26 @@
+name: rpipress-downloader
+version: git
+summary: Download RaspberryPi Press issues
+description: |
+  Download RaspberryPi Press issues.
+  Freely available magazines are: Hackspace, HelloWorld, MagPi and Wireframe.
+  You can choose to download all issues or only the latest one(s).
+  Issues are save in $SNAP_USER_DATA/rpipress/{magazine}.
+base: core18
+
+grade: stable
+confinement: strict
+
+parts:
+  downloaders:
+    plugin: python
+    python-version: python3
+    python-packages: [beautifulsoup4, lxml, progressbar, requests]
+    source: .
+
+apps:
+  rpipress-downloader:
+    command: rpipress-downloader
+    environment:
+      LANG: C.UTF-8
+    plugs: [network-bind]

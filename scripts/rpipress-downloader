@@ -1,0 +1,105 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from bs4 import BeautifulSoup
+import argparse
+import urllib.request as urlreq
+import progressbar
+import requests
+import os
+import sys
+
+
+pbar = None
+
+def show_progress(block_num, block_size, total_size):
+    global pbar
+    if pbar is None:
+        pbar = progressbar.ProgressBar(maxval=total_size)
+        pbar.start()
+
+    downloaded = block_num * block_size
+    if downloaded < total_size:
+        pbar.update(downloaded)
+    else:
+        pbar.finish()
+        pbar = None
+
+
+magazines = {
+    'hackspace' : 'HackSpace',
+    'helloworld' : 'HelloWorld',
+    'magpi' : 'MagPi',
+    'wireframe' : 'Wireframe',
+}
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-m", "--magazines", help="Choose which magazine(s) to download. Defaults to all",
+                    type=str.lower, action='append', nargs='+',
+                    choices=list(magazines.keys()))
+parser.add_argument("-l", "--latest", help="Download only the latest issue",
+                    action="store_true")
+parser.add_argument("-q", "--quiet", action="store_true", help="No prints")
+args = parser.parse_args()
+
+filtered_magazines = dict()
+if args.magazines:
+    # Retrieve all requested magazines in flatten list
+    requested_magazines = [item for sublist in args.magazines for item in sublist]
+
+    # Remove duplicates
+    requested_magazines = list(dict.fromkeys(requested_magazines))
+
+    # Get subset
+    filtered_magazines = {m: magazines[m] for m in requested_magazines}
+else:
+    # If none specified, get them all
+    filtered_magazines = magazines
+
+# Creating the download folder
+output_base_path = os.getenv('SNAP_USER_DATA')
+if not output_base_path: output_base_path = os.path.expanduser('~')
+
+download = False
+for magazine, Magazine in filtered_magazines.items():
+
+    output_path = os.path.join(output_base_path, 'rpipress', Magazine)
+
+    if not os.path.exists(output_path): os.makedirs(output_path)
+
+    # Find latest review number
+    url = 'https://' + magazine + '.raspberrypi.org/issues'
+    try:
+        r = requests.get(url)
+        data = r.text
+        soup = BeautifulSoup(data,"lxml")
+        last_issue=soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
+    except():
+        raise Exception('Could not find latest ' + Magazine + ' issue number')
+    else:
+        if not args.quiet: print('Latest ' + Magazine + ' issue is N°' + last_issue)
+
+    start_issue = 1 if not args.latest else int(last_issue)
+
+    # Download issues
+    for issue in range(start_issue, int(last_issue) + 1):
+        try:
+            issue_path = os.path.join(output_path, Magazine + '{:02d}.pdf'.format(issue))
+            if not os.path.exists(issue_path):
+                r = requests.get(url + '/{:02d}/pdf'.format(issue))
+                data = r.text
+                soup = BeautifulSoup(data,"lxml")
+                tag = soup.find(lambda tag: tag.name == 'a' and tag.get('class') == ['c-link'] and tag.get('download') != None)
+                urlreq.urlretrieve(tag['href'], issue_path, show_progress)
+                download = True
+            else:
+                continue
+        except():
+            if not args.quiet: print('ERROR: There was an error downloading ' + Magazine + ' N°{:02d}'.format(issue))
+        else:
+            if not args.quiet: print(Magazine + ' N°{:02d} Downloaded!'.format(issue))
+
+if not args.quiet:
+    if not download: print('You are up to date')
+    print('Your favorite magazines are waiting for you in ' +
+        os.path.join(output_base_path, 'rpipress'))
