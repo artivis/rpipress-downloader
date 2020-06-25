@@ -15,6 +15,7 @@ parts:
   downloaders:
     plugin: python
     python-version: python3
+    build-packages: [libxml2-dev, libxslt1-dev]
     python-packages: [beautifulsoup4, lxml, progressbar, requests]
     source: .
 

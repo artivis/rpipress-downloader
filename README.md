@@ -1,5 +1,7 @@
 # rpipress-downloader
 
+[![Snap Status](https://build.snapcraft.io/badge/artivis/rpipress-downloader.svg)](https://build.snapcraft.io/user/artivis/rpipress-downloader)
+
 Download Raspberry Pi Press issues.
 
 Freely available magazines are: Hackspace, HelloWorld, MagPi and Wireframe.
