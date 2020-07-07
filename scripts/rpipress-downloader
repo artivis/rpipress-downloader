@@ -12,7 +12,7 @@ import sys
 
 pbar = None
 
-def show_progress(block_num, block_size, total_size):
+def progress_bar(block_num, block_size, total_size):
     global pbar
     if pbar is None:
         pbar = progressbar.ProgressBar(maxval=total_size)
@@ -24,6 +24,21 @@ def show_progress(block_num, block_size, total_size):
     else:
         pbar.finish()
         pbar = None
+
+
+def is_a_clink(tag):
+    return tag.name == 'a' and \
+           tag.has_attr('class') and \
+           tag.get('class') == ['c-link']
+
+
+def downloadable_entry(tag):
+    return is_a_clink(tag) and tag.has_attr('download')
+
+
+def book_entry(tag):
+    return is_a_clink(tag) and \
+        tag.has_attr('data-category') and tag.get('data-category') == 'book'
 
 
 magazines = {
@@ -38,6 +53,8 @@ parser.add_argument("-m", "--magazines", help="Choose which magazine(s) to downl
                     type=str.lower, action='append', nargs='+',
                     choices=list(magazines.keys()))
 parser.add_argument("-a", "--all", help="Download all issues",
+                    action="store_true")
+parser.add_argument("-b", "--books", help="Download the magazine books",
                     action="store_true")
 parser.add_argument("-q", "--quiet", action="store_true", help="No prints")
 args = parser.parse_args()
@@ -67,10 +84,13 @@ for magazine, Magazine in filtered_magazines.items():
 
     if not os.path.exists(output_path): os.makedirs(output_path)
 
+    base_url = 'https://' + magazine + '.raspberrypi.org'
+
+    issues_url = base_url + '/issues'
+
     # Find latest review number
-    url = 'https://' + magazine + '.raspberrypi.org/issues'
     try:
-        r = requests.get(url)
+        r = requests.get(issues_url)
         data = r.text
         soup = BeautifulSoup(data,"lxml")
         last_issue = soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
@@ -86,10 +106,11 @@ for magazine, Magazine in filtered_magazines.items():
         try:
             issue_path = os.path.join(output_path, Magazine + '{:02d}.pdf'.format(issue))
             if not os.path.exists(issue_path):
-                r = requests.get(url + '/{:02d}/pdf'.format(issue))
+                r = requests.get(issues_url + '/{:02d}/pdf'.format(issue))
                 data = r.text
-                soup = BeautifulSoup(data,"lxml")
-                tag = soup.find(lambda tag: tag.name == 'a' and tag.get('class') == ['c-link'] and tag.get('download') != None)
+                soup = BeautifulSoup(data, "lxml")
+                tag = soup.find(downloadable_entry)
+                show_progress = progress_bar if not args.quiet else None
                 urlreq.urlretrieve(tag['href'], issue_path, show_progress)
                 download = True
             else:
@@ -97,7 +118,46 @@ for magazine, Magazine in filtered_magazines.items():
         except():
             if not args.quiet: print('ERROR: There was an error downloading ' + Magazine + ' N°{:02d}'.format(issue))
         else:
-            if not args.quiet: print(Magazine + ' N°{:02d} Downloaded!'.format(issue))
+            if not args.quiet: print(Magazine + ' N°{:02d} downloaded!'.format(issue))
+
+    if args.books:
+
+        books = {}
+
+        # Find all books
+        try:
+            r = requests.get(base_url + '/books')
+            data = r.text
+            soup = BeautifulSoup(data, "lxml")
+            tags = soup.find_all(book_entry)
+        except():
+            if not args.quiet: print('ERROR: There was an error retrieving the book list')
+        else:
+            for tag in tags:
+                books[tag['data-label']] = tag['href']
+
+            if books:
+                output_path = os.path.join(output_path, 'Books')
+                if not os.path.exists(output_path): os.makedirs(output_path)
+
+                # Download each book if not already there
+                for book_name, book_href in books.items():
+                    try:
+                        book_path = os.path.join(output_path, book_name + '.pdf')
+                        if not os.path.exists(book_path):
+                            r = requests.get(base_url + book_href + '/pdf')
+                            data = r.text
+                            soup = BeautifulSoup(data, "lxml")
+                            tag = soup.find(downloadable_entry)
+                            show_progress = progress_bar if not args.quiet else None
+                            # urlreq.urlretrieve(tag['href'], book_path, show_progress)
+                            download = True
+                        else:
+                            continue
+                    except():
+                        if not args.quiet: print('ERROR: There was an error downloading ' + Magazine + ' book ' + book_name)
+                    else:
+                        if not args.quiet: print(Magazine + ' book \'' + book_name + '\' downloaded!')
 
 if not args.quiet:
     if not download: print('You are up to date')
