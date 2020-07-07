@@ -37,7 +37,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-m", "--magazines", help="Choose which magazine(s) to download. Defaults to all",
                     type=str.lower, action='append', nargs='+',
                     choices=list(magazines.keys()))
-parser.add_argument("-l", "--latest", help="Download only the latest issue",
+parser.add_argument("-a", "--all", help="Download all issues",
                     action="store_true")
 parser.add_argument("-q", "--quiet", action="store_true", help="No prints")
 args = parser.parse_args()
@@ -79,7 +79,7 @@ for magazine, Magazine in filtered_magazines.items():
     else:
         if not args.quiet: print('Latest ' + Magazine + ' issue is N°' + last_issue)
 
-    start_issue = 1 if not args.latest else int(last_issue)
+    start_issue = 1 if args.all else int(last_issue)
 
     # Download issues
     for issue in range(start_issue, int(last_issue) + 1):
