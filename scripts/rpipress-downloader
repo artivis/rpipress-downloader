@@ -73,7 +73,7 @@ for magazine, Magazine in filtered_magazines.items():
         r = requests.get(url)
         data = r.text
         soup = BeautifulSoup(data,"lxml")
-        last_issue=soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
+        last_issue = soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
     except():
         raise Exception('Could not find latest ' + Magazine + ' issue number')
     else:
