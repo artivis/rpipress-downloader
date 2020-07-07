@@ -4,11 +4,18 @@
 
 Download Raspberry Pi Press issues.
 
-Freely available magazines are: Hackspace, HelloWorld, MagPi and Wireframe.
-You can choose to download all issues or only the latest one(s)
-for all or some magazines.
+Freely available magazines are:
+[HackSpace](https://hackspace.raspberrypi.org/),
+[HelloWorld](https://helloworld.raspberrypi.org/),
+[MagPi](https://magpi.raspberrypi.org/) and
+[Wireframe](https://wireframe.raspberrypi.org/).
 
-Issues are saved in `~/snap/rpipress-downloader/current/rpipress/{magazine}`.
+By default `rpipress-downloader` downloads only the latest issue of each
+magazine.
+However you can download all issues, all books for all or some magazines.
+
+Issues are saved in `~/snap/rpipress-downloader/current/rpipress/{magazine}`,
+and books in `~/snap/rpipress-downloader/current/rpipress/{magazine}/Books`.
 
 ## Install
 
@@ -35,22 +42,30 @@ rpipress-downloader
 
 ## Use
 
-By default, invoking `rpipress-downloader` will download all issues
+By default, invoking `rpipress-downloader` will download only the latest issue
 for each magazine if they are not already available locally.
 
-You can choose to download issues only for one (or some) magazine(s),
+You can:
+- download issues only for one (or several) magazine(s),
 ```bash
 $ rpipress-downloader --magazines magpi hackspace
 ```
-You can also download only the latest issue of each magazine,
+
+- download all issue of each magazine,
 ```bash
-$ rpipress-downloader --latest
+$ rpipress-downloader --all
 ```
-You can also combine options,
+
+- download all books,
 ```bash
-$ rpipress-downloader -l -m magpi
+$ rpipress-downloader --books
 ```
-will download only the latest MagPi issue.
+
+- combine options,
+```bash
+$ rpipress-downloader -a -m magpi -b
+```
+will download all MagPi issues and books.
 
 ## Options
 
@@ -58,12 +73,13 @@ will download only the latest MagPi issue.
 $ rpipress-downloader -h
 usage: rpipress-downloader [-h]
                            [-m {hackspace,helloworld,magpi,wireframe} [{hackspace,helloworld,magpi,wireframe} ...]]
-                           [-l] [-q]
+                           [-a] [-b] [-q]
 
 optional arguments:
   -h, --help            show this help message and exit
   -m {hackspace,helloworld,magpi,wireframe} [{hackspace,helloworld,magpi,wireframe} ...], --magazines {hackspace,helloworld,magpi,wireframe} [{hackspace,helloworld,magpi,wireframe} ...]
                         Choose which magazine(s) to download. Defaults to all
-  -l, --latest          Download only the latest issue
+  -a, --all             Download all issues
+  -b, --books           Download the magazine books
   -q, --quiet           No prints
 ```
