@@ -102,4 +102,4 @@ for magazine, Magazine in filtered_magazines.items():
 if not args.quiet:
     if not download: print('You are up to date')
     print('Your favorite magazines are waiting for you in ' +
-        os.path.join(output_base_path, 'rpipress'))
+        'file://' + os.path.join(output_base_path, 'rpipress'))
