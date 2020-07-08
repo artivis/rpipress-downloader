@@ -48,7 +48,23 @@ magazines = {
     'wireframe' : 'Wireframe',
 }
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="""
+Download Raspberry Pi Press issues.
+
+Freely available magazines are: HackSpace, HelloWorld, MagPi and Wireframe.
+
+By default `rpipress-downloader` downloads only the latest issue of each
+magazine. However you can download all issues, all books for all or some magazines.
+
+Issues and books are saved respectively in
+- `~/rpipress/{magazine}`
+- `~/rpipress/{magazine}/Books`
+
+or, using the snap, in
+- `~/snap/rpipress-downloader/current/rpipress/{magazine}`,
+- `~/snap/rpipress-downloader/current/rpipress/{magazine}/Books`.
+""", formatter_class = argparse.RawTextHelpFormatter)
+
 parser.add_argument("-m", "--magazines", help="Choose which magazine(s) to download. Defaults to all",
                     type=str.lower, action='append', nargs='+',
                     choices=list(magazines.keys()))
