@@ -14,8 +14,13 @@ By default `rpipress-downloader` downloads only the latest issue of each
 magazine.
 However you can download all issues, all books for all or some magazines.
 
-Issues are saved in `~/snap/rpipress-downloader/current/rpipress/{magazine}`,
-and books in `~/snap/rpipress-downloader/current/rpipress/{magazine}/Books`.
+Issues and books are saved respectively in
+- `~/rpipress/{magazine}`
+- `~/rpipress/{magazine}/Books`
+
+or, using the snap, in
+- `~/snap/rpipress-downloader/current/rpipress/{magazine}`,
+- `~/snap/rpipress-downloader/current/rpipress/{magazine}/Books`.
 
 ## Install
 
