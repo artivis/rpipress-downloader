@@ -150,7 +150,7 @@ for magazine, Magazine in filtered_magazines.items():
                             soup = BeautifulSoup(data, "lxml")
                             tag = soup.find(downloadable_entry)
                             show_progress = progress_bar if not args.quiet else None
-                            # urlreq.urlretrieve(tag['href'], book_path, show_progress)
+                            urlreq.urlretrieve(tag['href'], book_path, show_progress)
                             download = True
                         else:
                             continue
