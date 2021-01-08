@@ -10,6 +10,11 @@ Freely available magazines are:
 [MagPi](https://magpi.raspberrypi.org/) and
 [Wireframe](https://wireframe.raspberrypi.org/).
 
+Remember that you can find these resources for free only thanks to people
+around the world supporting them.
+You too can support their work either by buying physical copies or
+by making a contribution of any size.
+
 By default `rpipress-downloader` downloads only the latest issue of each
 magazine.
 However you can download all issues, all books for all or some magazines.

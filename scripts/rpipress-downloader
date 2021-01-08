@@ -126,6 +126,12 @@ for magazine, Magazine in filtered_magazines.items():
                 data = r.text
                 soup = BeautifulSoup(data, "lxml")
                 tag = soup.find(downloadable_entry)
+                if not tag:
+                    r = requests.get(issues_url + '/{:02d}/pdf/download'.format(issue))
+                    data = r.text
+                    soup = BeautifulSoup(data, "lxml")
+                    tag = soup.find(is_a_clink, string='click here to get your free PDF')
+                    tag['href'] = base_url + tag['href']
                 show_progress = progress_bar if not args.quiet else None
                 urlreq.urlretrieve(tag['href'], issue_path, show_progress)
                 download = True
@@ -165,6 +171,12 @@ for magazine, Magazine in filtered_magazines.items():
                             data = r.text
                             soup = BeautifulSoup(data, "lxml")
                             tag = soup.find(downloadable_entry)
+                            if not tag:
+                                r = requests.get(base_url + book_href + '/pdf/download')
+                                data = r.text
+                                soup = BeautifulSoup(data, "lxml")
+                                tag = soup.find(is_a_clink, string='click here to get your free PDF')
+                                tag['href'] = base_url + tag['href']
                             show_progress = progress_bar if not args.quiet else None
                             urlreq.urlretrieve(tag['href'], book_path, show_progress)
                             download = True
