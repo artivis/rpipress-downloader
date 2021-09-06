@@ -11,6 +11,9 @@ import sys
 
 
 pbar = None
+snap = True
+if os.getenv("SNAP_USER_DATA") == None:
+    snap = False
 
 def progress_bar(block_num, block_size, total_size):
     global pbar
@@ -73,7 +76,8 @@ parser.add_argument("-a", "--all", help="Download all issues",
 parser.add_argument("-b", "--books", help="Download the magazine books",
                     action="store_true")
 parser.add_argument("-q", "--quiet", action="store_true", help="No prints")
-parser.add_argument("-p", "--path", type=str, help="Set the path to save to.")
+if not snap:
+    parser.add_argument("-p", "--path", type=str, help="Set the path to save to.")
 args = parser.parse_args()
 
 filtered_magazines = dict()
@@ -92,9 +96,10 @@ else:
 
 # Creating the download folder
 output_base_path = os.getenv('SNAP_USER_DATA')
-if not output_base_path: output_base_path = os.path.join(os.path.expanduser('~'), "rpipress")
-else: output_base_path = os.path.join(output_base_path, "rpipress")
-if args.path: output_base_path = os.path.abspath(args.path)
+if not snap:
+    if not output_base_path: output_base_path = os.path.join(os.path.expanduser('~'), "rpipress")
+    else: output_base_path = os.path.join(output_base_path, "rpipress")
+    if args.path: output_base_path = os.path.abspath(args.path)
 
 download = False
 for magazine, Magazine in filtered_magazines.items():
