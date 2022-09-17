@@ -14,8 +14,6 @@ confinement: strict
 parts:
   downloaders:
     plugin: python
-    build-packages: [libxml2-dev, libxslt1-dev]
-    python-packages: [beautifulsoup4, lxml, progressbar2, requests, wheel]
     source: .
 
 apps:

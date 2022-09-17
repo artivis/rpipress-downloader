@@ -6,4 +6,5 @@ setuptools.setup(
     scripts=[
         "scripts/rpipress-downloader",
     ],
+    install_requires=['beautifulsoup4', 'lxml', 'progressbar2', 'requests', 'wheel'],
 )
