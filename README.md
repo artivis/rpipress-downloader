@@ -30,31 +30,20 @@ or, using the snap, in
 - `~/snap/rpipress-downloader/current/rpipress/{magazine}`,
 - `~/snap/rpipress-downloader/current/rpipress/{magazine}/Books`.
 
-## Install
+## Installation
 
 ### From source
 
 ```bash
 git clone https://github.com/artivis/rpipress-downloader.git
-cd rpipress-downloader/scripts
-```
-
-Use with,
-
-```bash
-python3 rpipress-downloader
+cd rpipress-downloader
+python3 -m pip install -U .
 ```
 
 ### Snap
 
 ```bash
 sudo snap install rpipress-downloader
-```
-
-Use with,
-
-```bash
-rpipress-downloader
 ```
 
 ## Use
