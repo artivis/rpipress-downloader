@@ -7,7 +7,6 @@ import urllib.request as urlreq
 import progressbar
 import requests
 import os
-import sys
 
 
 pbar = None
