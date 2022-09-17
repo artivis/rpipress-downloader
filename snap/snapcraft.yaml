@@ -6,7 +6,7 @@ description: |
   Freely available magazines are: Hackspace, HelloWorld, MagPi and Wireframe.
   You can choose to download all issues or only the latest one(s).
   Issues are save in $SNAP_USER_DATA/rpipress/{magazine}.
-base: core18
+base: core20
 
 grade: stable
 confinement: strict
@@ -14,14 +14,11 @@ confinement: strict
 parts:
   downloaders:
     plugin: python
-    python-version: python3
     build-packages: [libxml2-dev, libxslt1-dev]
-    python-packages: [beautifulsoup4, lxml, progressbar, requests]
+    python-packages: [beautifulsoup4, lxml, progressbar2, requests, wheel]
     source: .
 
 apps:
   rpipress-downloader:
-    command: rpipress-downloader
-    environment:
-      LANG: C.UTF-8
-    plugs: [network-bind]
+    command: bin/rpipress-downloader
+    plugs: [home, network-bind, removable-media]
