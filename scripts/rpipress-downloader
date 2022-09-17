@@ -55,7 +55,7 @@ Freely available magazines are: HackSpace, HelloWorld, MagPi and Wireframe.
 By default `rpipress-downloader` downloads only the latest issue of each
 magazine. However you can download all issues, all books for all or some magazines.
 
-Issues and books are saved respectively in
+By default, issues and books are saved respectively in
 - `~/rpipress/{magazine}`
 - `~/rpipress/{magazine}/Books`
 
@@ -64,14 +64,18 @@ or, using the snap, in
 - `~/snap/rpipress-downloader/current/rpipress/{magazine}/Books`.
 """, formatter_class = argparse.RawTextHelpFormatter)
 
-parser.add_argument("-m", "--magazines", help="Choose which magazine(s) to download. Defaults to all",
-                    type=str.lower, action='append', nargs='+',
-                    choices=list(magazines.keys()))
 parser.add_argument("-a", "--all", help="Download all issues",
                     action="store_true")
 parser.add_argument("-b", "--books", help="Download the magazine books",
                     action="store_true")
+parser.add_argument("-m", "--magazines", help="Choose which magazine(s) to download. Defaults to all.",
+                    type=str.lower, action='append', nargs='+',
+                    choices=list(magazines.keys()))
+parser.add_argument("-p", "--path", help="Set the download path. "
+                    "Defaults to ~/rpipress or ~/snap/rpipress-downloader/current/rpipress.",
+                    type=str)
 parser.add_argument("-q", "--quiet", action="store_true", help="No prints")
+
 args = parser.parse_args()
 
 filtered_magazines = dict()
@@ -89,8 +93,15 @@ else:
     filtered_magazines = magazines
 
 # Creating the download folder
-output_base_path = os.getenv('SNAP_USER_DATA')
-if not output_base_path: output_base_path = os.path.expanduser('~')
+if args.path:
+    output_base_path = args.path
+elif os.getenv('SNAP_USER_DATA'):
+    output_base_path = os.getenv('SNAP_USER_DATA')
+else:
+    output_base_path = os.path.expanduser('~')
+
+if not os.path.exists(output_base_path):
+    raise FileNotFoundError(f"{output_base_path} folder does not exist!")
 
 download = False
 for magazine, Magazine in filtered_magazines.items():
@@ -109,7 +120,7 @@ for magazine, Magazine in filtered_magazines.items():
         data = r.text
         soup = BeautifulSoup(data,"lxml")
         last_issue = soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
-    except():
+    except:
         raise Exception('Could not find latest ' + Magazine + ' issue number')
     else:
         if not args.quiet: print('Latest ' + Magazine + ' issue is N°' + last_issue)
@@ -136,7 +147,7 @@ for magazine, Magazine in filtered_magazines.items():
                 download = True
             else:
                 continue
-        except():
+        except:
             if not args.quiet: print('ERROR: There was an error downloading ' + Magazine + ' N°{:02d}'.format(issue))
         else:
             if not args.quiet: print(Magazine + ' N°{:02d} downloaded!'.format(issue))
@@ -151,7 +162,7 @@ for magazine, Magazine in filtered_magazines.items():
             data = r.text
             soup = BeautifulSoup(data, "lxml")
             tags = soup.find_all(book_entry)
-        except():
+        except:
             if not args.quiet: print('ERROR: There was an error retrieving the book list')
         else:
             for tag in tags:
