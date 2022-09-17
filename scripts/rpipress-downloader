@@ -40,11 +40,18 @@ def book_entry(tag):
         tag.has_attr('data-category') and tag.get('data-category') == 'book'
 
 
+class Magazine:
+    def __init__(self, name, first_issue):
+        self.name = name
+        self.first_issue = first_issue
+
+
 magazines = {
-    'hackspace' : 'HackSpace',
-    'helloworld' : 'HelloWorld',
-    'magpi' : 'MagPi',
-    'wireframe' : 'Wireframe',
+    'custompc' : Magazine('CustomPC', 214),
+    'hackspace' : Magazine('HackSpace', 1),
+    'helloworld' : Magazine('HelloWorld', 1),
+    'magpi' : Magazine('MagPi', 1),
+    'wireframe' : Magazine('Wireframe', 1),
 }
 
 parser = argparse.ArgumentParser(description="""
@@ -104,13 +111,14 @@ if not os.path.exists(output_base_path):
     raise FileNotFoundError(f"{output_base_path} folder does not exist!")
 
 download = False
-for magazine, Magazine in filtered_magazines.items():
+download_error = False
+for magazine_key, magazine in filtered_magazines.items():
 
-    output_path = os.path.join(output_base_path, 'rpipress', Magazine)
+    output_path = os.path.join(output_base_path, 'rpipress', magazine.name)
 
     if not os.path.exists(output_path): os.makedirs(output_path)
 
-    base_url = 'https://' + magazine + '.raspberrypi.org'
+    base_url = 'https://' + magazine_key + '.raspberrypi.org'
 
     issues_url = base_url + '/issues'
 
@@ -121,16 +129,16 @@ for magazine, Magazine in filtered_magazines.items():
         soup = BeautifulSoup(data,"lxml")
         last_issue = soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
     except:
-        raise Exception('Could not find latest ' + Magazine + ' issue number')
+        raise Exception('Could not find latest ' + magazine.name + ' issue number')
     else:
-        if not args.quiet: print('Latest ' + Magazine + ' issue is N°' + last_issue)
+        if not args.quiet: print('Latest ' + magazine.name + ' issue is N°' + last_issue)
 
-    start_issue = 1 if args.all else int(last_issue)
+    start_issue = magazine.first_issue if args.all else int(last_issue)
 
     # Download issues
     for issue in range(start_issue, int(last_issue) + 1):
         try:
-            issue_path = os.path.join(output_path, Magazine + '{:02d}.pdf'.format(issue))
+            issue_path = os.path.join(output_path, magazine.name + '{:02d}.pdf'.format(issue))
             if not os.path.exists(issue_path):
                 r = requests.get(issues_url + '/{:02d}/pdf'.format(issue))
                 data = r.text
@@ -148,9 +156,10 @@ for magazine, Magazine in filtered_magazines.items():
             else:
                 continue
         except:
-            if not args.quiet: print('ERROR: There was an error downloading ' + Magazine + ' N°{:02d}'.format(issue))
+            if not args.quiet: print('ERROR: There was an error downloading ' + magazine.name + ' N°{:02d}'.format(issue))
+            download_error = True
         else:
-            if not args.quiet: print(Magazine + ' N°{:02d} downloaded!'.format(issue))
+            if not args.quiet: print(magazine.name + ' N°{:02d} downloaded!'.format(issue))
 
     if args.books:
 
@@ -192,12 +201,13 @@ for magazine, Magazine in filtered_magazines.items():
                             download = True
                         else:
                             continue
-                    except():
-                        if not args.quiet: print('ERROR: There was an error downloading ' + Magazine + ' book ' + book_name)
+                    except:
+                        if not args.quiet: print('ERROR: There was an error downloading ' + magazine.name + ' book ' + book_name)
+                        download_error = True
                     else:
-                        if not args.quiet: print(Magazine + ' book \'' + book_name + '\' downloaded!')
+                        if not args.quiet: print(magazine.name + ' book \'' + book_name + '\' downloaded!')
 
 if not args.quiet:
-    if not download: print('You are up to date')
+    if not download and not download_error: print('You are up to date.')
     print('Your favorite magazines are waiting for you in ' +
         'file://' + os.path.join(output_base_path, 'rpipress'))
