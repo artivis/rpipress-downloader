@@ -5,11 +5,11 @@
 Download Raspberry Pi Press issues.
 
 Freely available magazines are:
-[Custom PC](https://custompc.raspberrypi.org/),
+<!-- [Custom PC](https://custompc.raspberrypi.org/), -->
 [HackSpace](https://hackspace.raspberrypi.org/),
 [HelloWorld](https://helloworld.raspberrypi.org/),
 [MagPi](https://magpi.raspberrypi.org/) and
-[Wireframe](https://wireframe.raspberrypi.org/).
+<!-- [Wireframe](https://wireframe.raspberrypi.org/). -->
 
 Remember that you can find these resources for free only thanks to people
 around the world supporting them.
@@ -89,11 +89,11 @@ will download all MagPi issues and books in `/home/ubuntu/Documents/rpipress/Mag
 
 ```bash
 $ rpipress-downloader -h
-usage: rpipress-downloader [-h] [-a] [-b] [-m {custompc,hackspace,helloworld,magpi,wireframe} [{custompc,hackspace,helloworld,magpi,wireframe} ...]] [-p PATH] [-q]
+usage: rpipress-downloader [-h] [-a] [-b] [-m {hackspace,helloworld,magpi} [{hackspace,helloworld,magpi} ...]] [-p PATH] [-q]
 
 Download Raspberry Pi Press issues.
 
-Freely available magazines are: HackSpace, HelloWorld, MagPi and Wireframe.
+Freely available magazines are: HackSpace, HelloWorld, MagPi.
 
 By default `rpipress-downloader` downloads only the latest issue of each
 magazine. However you can download all issues, all books for all or some magazines.
@@ -110,7 +110,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -a, --all             Download all issues
   -b, --books           Download the magazine books
-  -m {custompc,hackspace,helloworld,magpi,wireframe} [{custompc,hackspace,helloworld,magpi,wireframe} ...], --magazines {custompc,hackspace,helloworld,magpi,wireframe} [{custompc,hackspace,helloworld,magpi,wireframe} ...]
+  -m {hackspace,helloworld,magpi} [{hackspace,helloworld,magpi} ...], --magazines {hackspace,helloworld,magpi} [{hackspace,helloworld,magpi} ...]
                         Choose which magazine(s) to download. Defaults to all.
   -p PATH, --path PATH  Set the download path. Defaults to ~/rpipress or ~/snap/rpipress-downloader/current/rpipress.
   -q, --quiet           No prints

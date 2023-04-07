@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
 import argparse
+import os
 import urllib.request as urlreq
+
 import progressbar
 import requests
-import os
-
+from bs4 import BeautifulSoup
 
 pbar = None
 
@@ -46,18 +46,20 @@ class Magazine:
         self.first_issue = first_issue
 
 
+# Disabling 'wireframe' after rit closed down.
+# Disabling 'custompc' after the download website isn't accessible anymore.
 magazines = {
-    'custompc' : Magazine('CustomPC', 214),
+    # 'custompc' : Magazine('CustomPC', 214),
     'hackspace' : Magazine('HackSpace', 1),
     'helloworld' : Magazine('HelloWorld', 1),
     'magpi' : Magazine('MagPi', 1),
-    'wireframe' : Magazine('Wireframe', 1),
+    # 'wireframe' : Magazine('Wireframe', 1),
 }
 
 parser = argparse.ArgumentParser(description="""
 Download Raspberry Pi Press issues.
 
-Freely available magazines are: HackSpace, HelloWorld, MagPi and Wireframe.
+Freely available magazines are: HackSpace, HelloWorld and MagPi.
 
 By default `rpipress-downloader` downloads only the latest issue of each
 magazine. However you can download all issues, all books for all or some magazines.
