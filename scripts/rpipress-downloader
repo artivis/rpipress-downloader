@@ -59,7 +59,7 @@ magazines = {
 parser = argparse.ArgumentParser(description="""
 Download Raspberry Pi Press issues.
 
-Freely available magazines are: HackSpace, HelloWorld, MagPi and Wireframe.
+Freely available magazines are: HackSpace, HelloWorld and MagPi.
 
 By default `rpipress-downloader` downloads only the latest issue of each
 magazine. However you can download all issues, all books for all or some magazines.
