@@ -46,12 +46,14 @@ class Magazine:
         self.first_issue = first_issue
 
 
+# Disabling 'wireframe' after rit closed down.
+# Disabling 'custompc' after the download website isn't accessible anymore.
 magazines = {
-    'custompc' : Magazine('CustomPC', 214),
+    # 'custompc' : Magazine('CustomPC', 214),
     'hackspace' : Magazine('HackSpace', 1),
     'helloworld' : Magazine('HelloWorld', 1),
     'magpi' : Magazine('MagPi', 1),
-    'wireframe' : Magazine('Wireframe', 1),
+    # 'wireframe' : Magazine('Wireframe', 1),
 }
 
 parser = argparse.ArgumentParser(description="""
