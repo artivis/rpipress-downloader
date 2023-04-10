@@ -7,8 +7,8 @@ Download Raspberry Pi Press issues.
 Freely available magazines are:
 <!-- [Custom PC](https://custompc.raspberrypi.org/), -->
 [HackSpace](https://hackspace.raspberrypi.org/),
-[HelloWorld](https://helloworld.raspberrypi.org/),
-[MagPi](https://magpi.raspberrypi.org/) and
+[HelloWorld](https://helloworld.raspberrypi.org/) and
+[MagPi](https://magpi.raspberrypi.org/)
 <!-- [Wireframe](https://wireframe.raspberrypi.org/). -->
 
 Remember that you can find these resources for free only thanks to people
