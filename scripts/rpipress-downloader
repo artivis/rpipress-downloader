@@ -174,7 +174,7 @@ for magazine_key, magazine in filtered_magazines.items():
             soup = BeautifulSoup(data, "lxml")
             tags = soup.find_all(book_entry)
         except:
-            if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + 'There was an error retrieving the book list')
+            if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' There was an error retrieving the book list')
         else:
             for tag in tags:
                 books[tag['data-label']] = tag['href']
@@ -204,7 +204,7 @@ for magazine_key, magazine in filtered_magazines.items():
                         else:
                             continue
                     except:
-                        if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + 'There was an error downloading ' + magazine.name + ' book ' + book_name)
+                        if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' There was an error downloading ' + magazine.name + ' book ' + book_name)
                         download_error = True
                     else:
                         if not args.quiet: print(magazine.name + ' book \'' + book_name + '\' downloaded!')
