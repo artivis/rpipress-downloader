@@ -52,7 +52,7 @@ class Magazine:
 
 magazines = {
     'hackspace' : Magazine('HackSpace', 1),
-    'helloworld' : Magazine('HelloWorld', 1),
+    # 'helloworld' : Magazine('HelloWorld', 1),
     'magpi' : Magazine('MagPi', 1),
 }
 
