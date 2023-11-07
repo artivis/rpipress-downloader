@@ -158,7 +158,7 @@ for magazine_key, magazine in filtered_magazines.items():
             else:
                 continue
         except:
-            if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' Couldn\'t download ' + magazine.name + ' N°{:02d}, you may need to wait for the free download'.format(issue))
+            if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' Couldn\'t download ' + magazine.name + ' N°{:02d}\n' + colors.FADE + 'You may need to wait for the free download\n'+ colors.ENDC.format(issue))
             download_error = True
         else:
             if not args.quiet: print(colors.OK + magazine.name + ' N°{:02d} downloaded!'.format(issue) + colors.ENDC)
