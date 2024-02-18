@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: rpipress-downloader
+Version: 0.0.4
+License-File: LICENSE
+Requires-Dist: beautifulsoup4
+Requires-Dist: lxml
+Requires-Dist: progressbar2
+Requires-Dist: requests
+Requires-Dist: wheel

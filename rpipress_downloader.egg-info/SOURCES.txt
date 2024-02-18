@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+rpipress_downloader.egg-info/PKG-INFO
+rpipress_downloader.egg-info/SOURCES.txt
+rpipress_downloader.egg-info/dependency_links.txt
+rpipress_downloader.egg-info/requires.txt
+rpipress_downloader.egg-info/top_level.txt
+scripts/rpipress-downloader
