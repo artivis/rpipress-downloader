@@ -52,7 +52,7 @@ class Magazine:
 
 magazines = {
     'hackspace' : Magazine('HackSpace', 1),
-    # 'helloworld' : Magazine('HelloWorld', 1),
+    'helloworld' : Magazine('HelloWorld', 1),
     'magpi' : Magazine('MagPi', 1),
 }
 
@@ -129,7 +129,10 @@ for magazine_key, magazine in filtered_magazines.items():
         r = requests.get(issues_url)
         data = r.text
         soup = BeautifulSoup(data,"lxml")
-        last_issue = soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
+        if magazine_key == "helloworld":
+            last_issue = soup.find('div', class_="pk-c-detailed-hero__links").findChild("a")['data-event-label'].split("Issue ")[-1]
+        else:
+            last_issue = soup.find('section', class_="c-latest-issue").findChild("a")['href'].split('/')[-1]
     except:
         raise Exception('Could not find latest ' + magazine.name + ' issue number')
     else:
@@ -142,18 +145,18 @@ for magazine_key, magazine in filtered_magazines.items():
         try:
             issue_path = os.path.join(output_path, magazine.name + '{:02d}.pdf'.format(issue))
             if not os.path.exists(issue_path):
-                r = requests.get(issues_url + '/{:02d}/pdf'.format(issue))
-                data = r.text
-                soup = BeautifulSoup(data, "lxml")
-                tag = soup.find(downloadable_entry)
-                if not tag:
+                if magazine_key == "helloworld":
+                    label = "Download PDF - Issue " + '{:02d}'.format(issue).lstrip('0')
+                    url = soup.find_all('a', attrs={"data-event-label": label})[0]['href']
+                else:
                     r = requests.get(issues_url + '/{:02d}/pdf/download'.format(issue))
                     data = r.text
                     soup = BeautifulSoup(data, "lxml")
                     tag = soup.find(is_a_clink, string='click here to get your free PDF')
-                    tag['href'] = base_url + tag['href']
+                    url = base_url + tag['href']
+
                 show_progress = progress_bar if not args.quiet else None
-                urlreq.urlretrieve(tag['href'], issue_path, show_progress)
+                urlreq.urlretrieve(url, issue_path, show_progress)
                 download = True
             else:
                 continue
