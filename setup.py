@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="rpipress-downloader",
-    version="0.0.3",
+    version="0.0.4",
     scripts=[
         "scripts/rpipress-downloader",
     ],
