@@ -39,21 +39,21 @@ def book_entry(tag):
     return is_a_clink(tag) and \
         tag.has_attr('data-category') and tag.get('data-category') == 'book'
 
+class colors:
+    OK = '\033[92m'
+    ERROR = '\033[91m'
+    FADE = '\033[2m'
+    ENDC = '\033[0m'
 
 class Magazine:
     def __init__(self, name, first_issue):
         self.name = name
         self.first_issue = first_issue
 
-
-# Disabling 'wireframe' after rit closed down.
-# Disabling 'custompc' after the download website isn't accessible anymore.
 magazines = {
-    # 'custompc' : Magazine('CustomPC', 214),
     'hackspace' : Magazine('HackSpace', 1),
-    'helloworld' : Magazine('HelloWorld', 1),
+    # 'helloworld' : Magazine('HelloWorld', 1),
     'magpi' : Magazine('MagPi', 1),
-    # 'wireframe' : Magazine('Wireframe', 1),
 }
 
 parser = argparse.ArgumentParser(description="""
@@ -158,10 +158,10 @@ for magazine_key, magazine in filtered_magazines.items():
             else:
                 continue
         except:
-            if not args.quiet: print('ERROR: There was an error downloading ' + magazine.name + ' N°{:02d}'.format(issue))
+            if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' Couldn\'t download ' + magazine.name + ' N°{:02d}\n' + colors.FADE + 'You may need to wait for the free download\n'+ colors.ENDC.format(issue))
             download_error = True
         else:
-            if not args.quiet: print(magazine.name + ' N°{:02d} downloaded!'.format(issue))
+            if not args.quiet: print(colors.OK + magazine.name + ' N°{:02d} downloaded!'.format(issue) + colors.ENDC)
 
     if args.books:
 
@@ -174,7 +174,7 @@ for magazine_key, magazine in filtered_magazines.items():
             soup = BeautifulSoup(data, "lxml")
             tags = soup.find_all(book_entry)
         except:
-            if not args.quiet: print('ERROR: There was an error retrieving the book list')
+            if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' There was an error retrieving the book list')
         else:
             for tag in tags:
                 books[tag['data-label']] = tag['href']
@@ -204,12 +204,12 @@ for magazine_key, magazine in filtered_magazines.items():
                         else:
                             continue
                     except:
-                        if not args.quiet: print('ERROR: There was an error downloading ' + magazine.name + ' book ' + book_name)
+                        if not args.quiet: print(colors.ERROR + 'ERROR:' + colors.ENDC + ' There was an error downloading ' + magazine.name + ' book ' + book_name)
                         download_error = True
                     else:
                         if not args.quiet: print(magazine.name + ' book \'' + book_name + '\' downloaded!')
 
 if not args.quiet:
-    if not download and not download_error: print('You are up to date.')
-    print('Your favorite magazines are waiting for you in ' +
-        'file://' + os.path.join(output_base_path, 'rpipress'))
+    if not download and not download_error: print(colors.OK + 'You are up to date.' + colors.ENDC)
+    print(colors.FADE + '\nYour favorite magazines are waiting for you in ' +
+        'file://' + os.path.join(output_base_path, 'rpipress') + colors.ENDC)
