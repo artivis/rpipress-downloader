@@ -206,9 +206,9 @@ for magazine_key, magazine in filtered_magazines.items():
 
                 # Download each book if not already there
                 for book_name, book_href in books.items():
-                    try:
-                        book_path = os.path.join(output_path, book_name + '.pdf')
-                        if not os.path.exists(book_path):
+                    book_path = os.path.join(output_path, book_name + '.pdf')
+                    if not os.path.exists(book_path):
+                        try:
                             r = requests.get(base_url + book_href + '/pdf/download')
                             data = r.text
                             soup = BeautifulSoup(data, "lxml")
@@ -218,27 +218,25 @@ for magazine_key, magazine in filtered_magazines.items():
                             show_progress = progress_bar if not args.quiet else None
                             urlreq.urlretrieve(url, book_path, show_progress)
                             download = True
+                        except:
+                            if not args.quiet:
+                                print(
+                                    log.ERROR
+                                    + ' Couldn\'t download {} book {}'.format(magazine.name, book_name)
+                                    + colors.FADE
+                                    + '.\nYou may need to wait for the free download'
+                                    + colors.ENDC
+                                )
+                            download_error = True
                         else:
-                            continue
-                    except:
-                        if not args.quiet:
-                            print(
-                                log.ERROR
-                                + ' Couldn\'t download {} book {}'.format(magazine.name, book_name)
-                                + colors.FADE
-                                + '.\nYou may need to wait for the free download'
-                                + colors.ENDC
-                            )
-                        download_error = True
-                    else:
-                        if not args.quiet:
-                            print(
-                                colors.OK
-                                +'{} book \'{}\' downloaded!'.format(magazine.name, book_name)
-                                + colors.ENDC
-                            )
-                    finally:
-                        if not args.quiet: print('')
+                            if not args.quiet:
+                                print(
+                                    colors.OK
+                                    +'{} book \'{}\' downloaded!'.format(magazine.name, book_name)
+                                    + colors.ENDC
+                                )
+                        finally:
+                            if not args.quiet: print('')
 
 if not args.quiet:
     if not download and not download_error:
