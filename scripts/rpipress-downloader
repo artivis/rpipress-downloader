@@ -139,7 +139,7 @@ for magazine_key, magazine in filtered_magazines.items():
         raise Exception('Could not find latest ' + magazine.name + ' issue number')
     else:
         if not args.quiet:
-            print('\nLatest {} issue is N°{:02d}'.format(magazine.name, int(last_issue)) )
+            print('Latest {} issue is N°{:02d}'.format(magazine.name, int(last_issue)) )
 
     start_issue = int(last_issue)-3 if args.all else int(last_issue)
 
@@ -164,10 +164,8 @@ for magazine_key, magazine in filtered_magazines.items():
             except:
                 if not args.quiet:
                     print(
-                        log.ERROR
-                        + ' Couldn\'t download the magazine'
-                        + colors.FADE
-                        + '\nYou may need to wait for the free download'
+                        colors.FADE
+                        + 'You may need to wait for the free download.\n'
                         + colors.ENDC
                     )
                 download_error = True
@@ -178,9 +176,8 @@ for magazine_key, magazine in filtered_magazines.items():
                         + '{} N°{:02d} downloaded!'.format(magazine.name, issue)
                         + colors.ENDC
                     )
-            # finally:
-            #     if not args.quiet: print()  # Breaks formatting
-
+        
+        
     if args.books:
 
         books = {}
@@ -208,7 +205,7 @@ for magazine_key, magazine in filtered_magazines.items():
                     
                     if not os.path.exists(book_path):
                         if not args.quiet:
-                            print('\nLatest {} book is \'{}\''.format(magazine.name, book_name))
+                            print('Latest {} book is \'{}\''.format(magazine.name, book_name))
                         try:
                             r = requests.get(base_url + book_href + '/pdf/download')
                             data = r.text
@@ -222,10 +219,8 @@ for magazine_key, magazine in filtered_magazines.items():
                         except:
                             if not args.quiet:
                                 print(
-                                    log.ERROR
-                                    + ' Couldn\'t download the book'
-                                    + colors.FADE
-                                    + '.\nYou may need to wait for the free download'
+                                    colors.FADE
+                                    + 'You may need to wait for the free download.\n'
                                     + colors.ENDC
                                 )
                             download_error = True
@@ -237,13 +232,17 @@ for magazine_key, magazine in filtered_magazines.items():
                                     + colors.ENDC
                                 )
 
+
 if not args.quiet:
     if not download and not download_error:
-        print(colors.OK + 'You are up to date.' + colors.ENDC)
-
+        print(
+            colors.OK 
+            + 'You are up to date.\n' 
+            + colors.ENDC
+        )
     print(
         colors.OK
-        + '\nYour favorite magazines are waiting for you in file://'
+        + 'Your favorite magazines are waiting for you in file://'
         + os.path.join(output_base_path)
         + colors.ENDC
     )
