@@ -112,12 +112,9 @@ else:
 
 if not os.path.exists(output_base_path):
     os.makedirs(output_base_path)
-    # raise  FileNotFoundError(f"{output_base_path} folder does not exist!")
 
-download = False
-download_error = False
+
 for magazine_key, magazine in filtered_magazines.items():
-
     output_path = os.path.join(output_base_path, magazine.name)
 
     if not os.path.exists(output_path): os.makedirs(output_path)
@@ -160,7 +157,6 @@ for magazine_key, magazine in filtered_magazines.items():
 
                 show_progress = progress_bar if not args.quiet else None
                 urlreq.urlretrieve(url, issue_path, show_progress)
-                download = True
             except:
                 if not args.quiet:
                     print(
@@ -168,7 +164,7 @@ for magazine_key, magazine in filtered_magazines.items():
                         + 'You may need to wait for the free download.\n'
                         + colors.ENDC
                     )
-                download_error = True
+            
             else:
                 if not args.quiet:
                     print(
@@ -176,10 +172,16 @@ for magazine_key, magazine in filtered_magazines.items():
                         + '{} N°{:02d} downloaded!'.format(magazine.name, issue)
                         + colors.ENDC
                     )
-        
+        # If the magazine already exists
+        else:
+            if not args.quiet:
+                print(
+                    colors.OK 
+                    + 'You are up to date.\n' 
+                    + colors.ENDC
+                )
         
     if args.books:
-
         books = {}
 
         # Find all books
@@ -234,12 +236,6 @@ for magazine_key, magazine in filtered_magazines.items():
 
 
 if not args.quiet:
-    if not download and not download_error:
-        print(
-            colors.OK 
-            + 'You are up to date.\n' 
-            + colors.ENDC
-        )
     print(
         colors.OK
         + 'Your favorite magazines are waiting for you in file://'
