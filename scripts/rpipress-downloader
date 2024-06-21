@@ -165,7 +165,7 @@ for magazine_key, magazine in filtered_magazines.items():
                 if not args.quiet:
                     print(
                         colors.FADE
-                        + 'You may need to wait for the free download.\n'
+                        + 'You may need to wait for the free download.'
                         + colors.ENDC
                     )
                 download_error = True
@@ -220,7 +220,7 @@ for magazine_key, magazine in filtered_magazines.items():
                             if not args.quiet:
                                 print(
                                     colors.FADE
-                                    + 'You may need to wait for the free download.\n'
+                                    + 'You may need to wait for the free download.'
                                     + colors.ENDC
                                 )
                             download_error = True
@@ -237,7 +237,7 @@ if not args.quiet:
     if not download and not download_error:
         print(
             colors.OK 
-            + 'You are up to date.\n' 
+            + 'You are up to date.' 
             + colors.ENDC
         )
     print(
