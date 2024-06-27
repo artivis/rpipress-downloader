@@ -71,19 +71,19 @@ You can:
   rpipress-downloader --books
   ```
 
-- download to a specific base path,
+- download to a specific path,
 
   ```bash
-  rpipress-downloader --path /home/ubuntu/Documents
+  rpipress-downloader --path /home/ubuntu/Documents/Raspberrypi
   ```
 
 - combine options,
 
   ```bash
-  rpipress-downloader -a -m magpi -b -p /home/ubuntu/Documents
+  rpipress-downloader -ab -m magpi -p /home/ubuntu/Documents/Raspberrypi
   ```
 
-will download all MagPi issues and books in `/home/ubuntu/Documents/rpipress/MagPi`.
+will download all MagPi issues and books to `/home/ubuntu/Documents/Raspberrypi/MagPi`.
 
 ## Options
 

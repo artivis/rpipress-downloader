@@ -1,6 +1,4 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
+#!/usr/bin/env python3
 import argparse
 import os
 import urllib.request as urlreq
@@ -27,8 +25,8 @@ def progress_bar(block_num, block_size, total_size):
 
 def is_a_clink(tag):
     return tag.name == 'a' and \
-           tag.has_attr('class') and \
-           tag.get('class') == ['c-link']
+        tag.has_attr('class') and \
+        tag.get('class') == ['c-link']
 
 
 def downloadable_entry(tag):
@@ -107,24 +105,24 @@ else:
 # Creating the download folder
 if args.path:
     output_base_path = args.path
-elif os.getenv('SNAP_USER_DATA'):
-    output_base_path = os.getenv('SNAP_USER_DATA')
+elif os.getenv('SNAP_USER_DATA/rpipress'):
+    output_base_path = os.getenv('SNAP_USER_DATA/rpipress')
 else:
-    output_base_path = os.path.expanduser('~')
+    output_base_path = os.path.expanduser('~/rpipress')
 
 if not os.path.exists(output_base_path):
-    raise FileNotFoundError(f"{output_base_path} folder does not exist!")
+    os.makedirs(output_base_path)
+    # raise  FileNotFoundError(f"{output_base_path} folder does not exist!")
 
-download = False
-download_error = False
 for magazine_key, magazine in filtered_magazines.items():
-
-    output_path = os.path.join(output_base_path, 'rpipress', magazine.name)
+    download_magazine = False
+    download_magazine_error = False
+    
+    output_path = os.path.join(output_base_path, magazine.name)
 
     if not os.path.exists(output_path): os.makedirs(output_path)
 
     base_url = 'https://' + magazine_key + '.raspberrypi.org'
-
     issues_url = base_url + '/issues'
 
     # Find latest review number
@@ -140,9 +138,8 @@ for magazine_key, magazine in filtered_magazines.items():
         raise Exception('Could not find latest ' + magazine.name + ' issue number')
     else:
         if not args.quiet:
-            print( 'Latest {} issue is N°{:02d}\n'.format(magazine.name, int(last_issue)) )
+            print('Latest {} issue is N°{:02d}'.format(magazine.name, int(last_issue)) )
 
-    # start_issue = magazine.first_issue if args.all else int(last_issue)
     start_issue = int(last_issue)-3 if args.all else int(last_issue)
 
     # Download issues
@@ -162,17 +159,15 @@ for magazine_key, magazine in filtered_magazines.items():
 
                 show_progress = progress_bar if not args.quiet else None
                 urlreq.urlretrieve(url, issue_path, show_progress)
-                download = True
+                download_magazine = True
             except:
                 if not args.quiet:
                     print(
-                        log.ERROR
-                        + ' Couldn\'t download {} N°{:02d}\n'.format(magazine.name, issue)
-                        + colors.FADE
-                        + 'You may need to wait for the free download'
+                        colors.FADE
+                        + 'You may need to wait for the free download.'
                         + colors.ENDC
                     )
-                download_error = True
+                download_magazine_error = True
             else:
                 if not args.quiet:
                     print(
@@ -180,11 +175,9 @@ for magazine_key, magazine in filtered_magazines.items():
                         + '{} N°{:02d} downloaded!'.format(magazine.name, issue)
                         + colors.ENDC
                     )
-            finally:
-                if not args.quiet: print('')
-
+        
+        
     if args.books:
-
         books = {}
 
         # Find all books
@@ -195,7 +188,7 @@ for magazine_key, magazine in filtered_magazines.items():
             tags = soup.find_all(book_entry)
         except:
             if not args.quiet:
-                print(log.ERROR + ' There was an error retrieving the book list')
+                print(log.ERROR + 'There was an error retrieving the book list')
         else:
             for tag in tags:
                 books[tag['data-label']] = tag['href']
@@ -207,27 +200,28 @@ for magazine_key, magazine in filtered_magazines.items():
                 # Download each book if not already there
                 for book_name, book_href in books.items():
                     book_path = os.path.join(output_path, book_name + '.pdf')
+                    
                     if not os.path.exists(book_path):
+                        if not args.quiet:
+                            print('Latest {} book is \'{}\''.format(magazine.name, book_name))
                         try:
                             r = requests.get(base_url + book_href + '/pdf/download')
                             data = r.text
                             soup = BeautifulSoup(data, "lxml")
                             tag = soup.find(is_a_clink, string='click here to get your free PDF')
                             url = base_url + tag['href']
-
                             show_progress = progress_bar if not args.quiet else None
                             urlreq.urlretrieve(url, book_path, show_progress)
-                            download = True
+                            download_magazine = True
+
                         except:
                             if not args.quiet:
                                 print(
-                                    log.ERROR
-                                    + ' Couldn\'t download {} book {}'.format(magazine.name, book_name)
-                                    + colors.FADE
-                                    + '.\nYou may need to wait for the free download'
+                                    colors.FADE
+                                    + 'You may need to wait for the free download.'
                                     + colors.ENDC
                                 )
-                            download_error = True
+                            download_magazine_error = True
                         else:
                             if not args.quiet:
                                 print(
@@ -235,16 +229,19 @@ for magazine_key, magazine in filtered_magazines.items():
                                     +'{} book \'{}\' downloaded!'.format(magazine.name, book_name)
                                     + colors.ENDC
                                 )
-                        finally:
-                            if not args.quiet: print('')
+
+    if not args.quiet:
+        if not download_magazine and not download_magazine_error:
+            print(
+                colors.OK 
+                + 'You are up to date.' 
+                + colors.ENDC
+            )
 
 if not args.quiet:
-    if not download and not download_error:
-        print(colors.OK + 'You are up to date.' + colors.ENDC)
-
     print(
-        colors.FADE
+        colors.OK
         + 'Your favorite magazines are waiting for you in file://'
-        + os.path.join(output_base_path, 'rpipress')
+        + os.path.join(output_base_path)
         + colors.ENDC
     )
