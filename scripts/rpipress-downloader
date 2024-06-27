@@ -114,16 +114,15 @@ if not os.path.exists(output_base_path):
     os.makedirs(output_base_path)
     # raise  FileNotFoundError(f"{output_base_path} folder does not exist!")
 
-download = False
-download_error = False
 for magazine_key, magazine in filtered_magazines.items():
-
+    download_magazine = False
+    download_magazine_error = False
+    
     output_path = os.path.join(output_base_path, magazine.name)
 
     if not os.path.exists(output_path): os.makedirs(output_path)
 
     base_url = 'https://' + magazine_key + '.raspberrypi.org'
-
     issues_url = base_url + '/issues'
 
     # Find latest review number
@@ -160,7 +159,7 @@ for magazine_key, magazine in filtered_magazines.items():
 
                 show_progress = progress_bar if not args.quiet else None
                 urlreq.urlretrieve(url, issue_path, show_progress)
-                download = True
+                download_magazine = True
             except:
                 if not args.quiet:
                     print(
@@ -168,7 +167,7 @@ for magazine_key, magazine in filtered_magazines.items():
                         + 'You may need to wait for the free download.'
                         + colors.ENDC
                     )
-                download_error = True
+                download_magazine_error = True
             else:
                 if not args.quiet:
                     print(
@@ -179,7 +178,6 @@ for magazine_key, magazine in filtered_magazines.items():
         
         
     if args.books:
-
         books = {}
 
         # Find all books
@@ -214,7 +212,7 @@ for magazine_key, magazine in filtered_magazines.items():
                             url = base_url + tag['href']
                             show_progress = progress_bar if not args.quiet else None
                             urlreq.urlretrieve(url, book_path, show_progress)
-                            download = True
+                            download_magazine = True
 
                         except:
                             if not args.quiet:
@@ -223,7 +221,7 @@ for magazine_key, magazine in filtered_magazines.items():
                                     + 'You may need to wait for the free download.'
                                     + colors.ENDC
                                 )
-                            download_error = True
+                            download_magazine_error = True
                         else:
                             if not args.quiet:
                                 print(
@@ -232,14 +230,15 @@ for magazine_key, magazine in filtered_magazines.items():
                                     + colors.ENDC
                                 )
 
+    if not args.quiet:
+        if not download_magazine and not download_magazine_error:
+            print(
+                colors.OK 
+                + 'You are up to date.' 
+                + colors.ENDC
+            )
 
 if not args.quiet:
-    if not download and not download_error:
-        print(
-            colors.OK 
-            + 'You are up to date.' 
-            + colors.ENDC
-        )
     print(
         colors.OK
         + 'Your favorite magazines are waiting for you in file://'
